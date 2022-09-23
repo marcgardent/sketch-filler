@@ -1,10 +1,13 @@
 cmake_minimum_required(VERSION 3.21)
-project (sketch_filler)
+project(sketchFiller)
+set(CMAKE_CXX_STANDARD 17)
+set(OpenCV_DIR "T:/bin/opencv/build")
 
-set(CMAKE_CXX_STANDARD 11)
-find_package(OpenCV REQUIRED PATHS "T:/bin/opencv")
-
+find_package(OpenCV REQUIRED)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-add_executable(sketch_filler main.cpp)
-target_link_libraries( sketch_filler ${OpenCV_LIBS} )
+add_subdirectory(processing)
+add_subdirectory(showroom)
+
+
+
