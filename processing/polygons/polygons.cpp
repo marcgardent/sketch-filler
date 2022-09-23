@@ -18,10 +18,7 @@ namespace processing::polygon {
     using namespace std;
     using namespace points;
 
-
-
     RNG rng(12365);
-
 
     static vector<Point2f> walk(vector<Point> polygon, int seed, int direction, int step_count, float step_length) {
         vector<Point2f> ret;

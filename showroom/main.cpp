@@ -2,10 +2,10 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include "../processing/contrib/thinning.hpp"
-#include "../processing/polygons/polygons.hpp"
-#include "../processing/pixels/pixels.hpp"
-#include "../processing/points/points.hpp"
+#include "thinning.hpp"
+#include "polygons.hpp"
+#include "pixels.hpp"
+#include "points.hpp"
 
 using namespace cv;
 using namespace std;
