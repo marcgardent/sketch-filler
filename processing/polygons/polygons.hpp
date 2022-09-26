@@ -11,6 +11,7 @@ namespace processing::polygon {
     using namespace processing::points;
 
     void debug(Mat source);
+    vector<Point> simplifyAll(vector<Point> polygon);
 
 }
 #endif

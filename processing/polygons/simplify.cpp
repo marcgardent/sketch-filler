@@ -3,6 +3,9 @@
 //
 #include <iostream>
 #include "polygons.hpp"
+
+#define THRESHOLD_SQUARED 1
+
 namespace processing::polygon {
 
     static vector<Point> simplify(vector<Point> polygon) {
@@ -16,16 +19,17 @@ namespace processing::polygon {
             Point2f G = barycenter(A,B,C);
             Point2f BG= G - B2f;
             float dSquared = (BG.x*BG.x + BG.y*BG.y);
-            if (dSquared >= 1){
+            std::cout << "    dSquared:"<< dSquared  << std::endl;
+            if (dSquared >= THRESHOLD_SQUARED){
                 ret.push_back(B);
             }
         }
         return ret;
     }
 
-    static vector<Point> simplifyAll(vector<Point> polygon) {
+    vector<Point> simplifyAll(vector<Point> polygon) {
         vector<Point> current = polygon;
-        vector<Point> ret;
+
         std::cout << "start simplifyAll" << std::endl;
         bool run = true;
         while(run) {
@@ -36,6 +40,6 @@ namespace processing::polygon {
             current = next;
         }
         std::cout << "end simplifyAll" << std::endl;
-        return ret;
+        return current;
     }
 }

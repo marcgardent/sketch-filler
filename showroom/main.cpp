@@ -1,69 +1,69 @@
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <filesystem>
+
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+
 #include "thinning.hpp"
 #include "polygons.hpp"
 #include "pixels.hpp"
 #include "points.hpp"
+#include "morphologicals.hpp"
 
+namespace fs = std::filesystem;
 using namespace cv;
-using namespace std;
 
-// #define SOURCE_PATH "G:\\Mon Drive\\Ludopant Creative Studio\\Ludopant Galaxy\\order #2 - BD CJS S1E1 Paris\\Order 2.1\\2022-09-16 release Ch1&2\\Page finale 1.tiff"
-#define SOURCE_PATH "T:\\data\\sketch-filler2\\chalenges\\case-04.png"
+int brush_size = 5;
 
-int main()
-{
+int main(int argc, char *argv[]) {
+    if(argc>=2){
+        std::string in_file = argv[1];
 
-    std::cout << "Open: " << SOURCE_PATH << std::endl;
-    Mat source = cv::imread(SOURCE_PATH, IMREAD_UNCHANGED);
 
-    if(source.empty())
-    {
-        std::cout << "Could not read the image: " << SOURCE_PATH << std::endl;
+        std::cout << "Open: " << in_file << std::endl;
+
+        Mat source = cv::imread(in_file, IMREAD_UNCHANGED);
+        if(!source.empty())
+        {
+
+            // Step Clean up the image
+            Mat working_mat;
+            {
+                cvtColor(source, working_mat, COLOR_BGR2GRAY);
+                threshold(working_mat, working_mat, 100, 255, THRESH_BINARY);
+                bitwise_not(working_mat, working_mat);
+            }
+
+            {
+                //final output
+                Mat result;
+                cvtColor(working_mat, result,COLOR_GRAY2RGB);
+
+                //hotspot
+                Mat hotspot5;
+                processing::morphologicals::detect_gap_areas(working_mat,hotspot5, 5);
+                result.setTo(Scalar(255,255,0),hotspot5 );
+
+                bitwise_not(result, result);
+
+                //save
+                std::stringstream ss;
+                fs::path parsed = fs::path(in_file);
+                fs::path out_path =parsed.parent_path();
+                out_path /= parsed.stem();
+                out_path += "_outline_gap.png";
+                imwrite(out_path.string(), result);
+                std::cout << "Save: " << out_path << std::endl;
+            }
+        }
+        else{
+            std::cout << "Could not read the image: " << in_file << std::endl;
+        }
+    } else{
+        std::cout << "add the file path to command line!" << std::endl;
     }
-    else {
-        imshow( "Original", source);
 
-        // Step Clean up the image
-        Mat working_mat;
-        std::cout << "source: channels:" << source.channels() << " depth:" << source.depth() << std::endl;
-        cvtColor(source, working_mat, COLOR_BGR2GRAY);
-
-        std::cout << "GRAYSCALE channels: " << working_mat.channels()  << " depth:" << working_mat.depth()  << std::endl;
-        threshold(working_mat, working_mat, 100, 255, THRESH_BINARY);
-        bitwise_not(working_mat, working_mat);
-        std::cout << "Binary channels: " << working_mat.channels()  << " depth:" << working_mat.depth() << std::endl;
-
-        {
-            int erosion_size = 5;
-            Mat erosion_dst;
-            Mat element = getStructuringElement( MORPH_ELLIPSE,
-                                                 Size( 2*erosion_size + 1, 2*erosion_size+1 ),
-                                                 Point( erosion_size, erosion_size ) );
-            erode( working_mat, erosion_dst, element );
-            bitwise_not(erosion_dst, erosion_dst);
-            imshow( "detect flattened", erosion_dst );
-            bitwise_and(working_mat, erosion_dst, working_mat);
-            imshow("Cleaned", working_mat);
-        }
-
-        //  contours strategy
-        {
-            processing::polygon::debug(working_mat);
-        }
-
-        {
-            // Step thinning strategy
-            Mat thinning_output = Mat::zeros( working_mat.size(), CV_8UC1 );
-            cv::ximgproc::thinning(working_mat, thinning_output, cv::ximgproc::THINNING_ZHANGSUEN);
-
-            imshow( "edges output", thinning_output);
-            processing::pixels::debug_thinning_strategy(thinning_output, working_mat);
-        }
-
-        //the End
-        int k = waitKey(0);
-    }
 }

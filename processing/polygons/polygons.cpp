@@ -162,15 +162,14 @@ namespace processing::polygon {
 
 
             for (size_t j = 0; j < inners.size(); j++) {
-                vector<Point> polygon = contours[inners[j]];
-//                auto br = compute_barycenter(polygon, 3);
-//                line(drawing, polygon[3], Point(rint(br.x), rint(br.y)), Scalar(255,0,255), 1);
+                vector<Point> polygon = simplifyAll(contours[inners[j]]);
 
                 for (size_t k = 0; k < polygon.size(); k++) {
                     auto br = compute_barycenter(polygon, k);
                     auto normal = Normalize(br - toPoint2f(polygon[k]));
                     line(drawing, polygon[k], polygon[k] + roundPoint2f(normal * 100), Scalar(255, 0, 255), 1);
                     line(drawing, polygon[k], polygon[k] + roundPoint2f(normal * (-100)), Scalar(0, 255, 0), 1);
+                    circle(drawing, polygon[k], 3, Scalar(255,255,0), 1);
                 }
                 drawContours(drawing, contours, (int) inners[j], Scalar(200, 200, 200), 1, LINE_8, hierarchy, 0);
             }

@@ -1,2 +1,3 @@
 # Project exclude paths
-/cmake-build-debug_thinning_strategy/
+/cmake-build-*
+/build*
