@@ -20,10 +20,12 @@ QSGNode *Renderer::updatePaintNode(QSGNode * oldNode, QQuickItem::UpdatePaintNod
 
         QSGTexture *texture = window()->createTextureFromImage(m_image, QQuickWindow::TextureIsOpaque);
         node->setOwnsTexture(true);
-        node->setRect(boundingRect());
+        //node->setRect(boundingRect());
+        auto bound = boundingRect();
+        auto fit_bound = std::min(bound.width(),bound.height());
+
+        node->setRect(bound.width()/2 - fit_bound/2, bound.height()/2 - fit_bound/2, fit_bound, fit_bound);
         node->markDirty(QSGNode::DirtyForceUpdate);
         node->setTexture(texture);
-
-
         return node;
 }

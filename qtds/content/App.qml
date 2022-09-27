@@ -71,51 +71,6 @@ Window {
                      anchors.fill: parent
                 }
 
-                Flickable {
-                    anchors.fill: parent
-                    anchors.topMargin: 100
-
-                    contentWidth: Math.max(image.width * image.scale, parent.width)
-                    contentHeight: Math.max(image.height * image.scale, parent.height)
-                    clip: true
-
-                    Image {
-                        id: image
-
-                        property real zoom: 0.0
-                        property real zoomStep: 0.1
-
-                        asynchronous: true
-                        cache: false
-                        smooth: true
-                        antialiasing: true
-                        mipmap: true
-
-                        anchors.centerIn: parent
-                        fillMode: Image.PreserveAspectFit
-                        transformOrigin: Item.Center
-                        scale: Math.min(parent.width / width, parent.height / height, 1) + zoom
-
-                        //source: openDialog.fileUrl
-                    }
-                }
-
-
-                // Mouse zoom
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-
-                    onWheel: {
-                        if (wheel.angleDelta.y > 0)
-                            image.zoom = Number((image.zoom + image.zoomStep).toFixed(1))
-                        else
-                            if (image.zoom > 0) image.zoom = Number((image.zoom - image.zoomStep).toFixed(1))
-
-                        wheel.accepted=true
-                    }
-                }
-
         }
 
         // Just a simple file dialog to choose an image
