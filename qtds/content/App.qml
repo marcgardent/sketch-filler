@@ -6,6 +6,7 @@ import QtQuick.Dialogs
 import QtQuick.Controls
 import backend
 
+
 Window {
     id: main
     width: 800
@@ -20,6 +21,7 @@ Window {
     title: "Colorize"
 
     //visibility: Window.Maximized
+
 
     Rectangle{
         anchors.fill: parent
@@ -56,6 +58,14 @@ Window {
                     width: parent.height - 2*Constants.gutter
                     onClicked: main.close()
                 }
+
+                RoundButton {
+                    id: updateButton
+                    text: "Update"
+                    height: parent.height - 2*Constants.gutter
+                    width: parent.height - 2*Constants.gutter
+                    onClicked: workspace.update()
+                }
             }
         }
         //working space
@@ -66,11 +76,15 @@ Window {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
 
-
-            // Important things!
-
                 Renderer{
-                     anchors.fill: parent
+                    id: workspace
+                    anchors.fill: parent
+                }
+
+                Timer {
+                    interval: 500; running: true; repeat: true
+                    onTriggered: workspace.update()
+
                 }
 
         }

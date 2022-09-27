@@ -9,8 +9,6 @@ NINJA = "T:/Program Files/JetBrains/CLion 2021.3.4/bin/ninja/win/ninja.exe"
 VCVARS = "T:/Program Files/Microsoft Visual Studio/2022/Community/VC/Auxiliary/Build/vcvarsall.bat"
 VC_PLATEFORM = "x86_x64"
 
-
-
 SOURCE_DIR =  path.dirname(path.realpath(__file__))
 BINARY_DIR = path.join(SOURCE_DIR, "automate-build-release")
 
@@ -30,9 +28,10 @@ def reset_cmake(hard_reset=True):
         except:pass
     mandatory_exec([CMAKE, "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_MAKE_PROGRAM={NINJA}" , "-G", "Ninja", "-S", SOURCE_DIR, "-B", BINARY_DIR])
 
+def sync_shared_backend():
+    for file in ["renderer.h","renderer.cpp", "asm_opencv.h" ]:
+        shutil.copy2(path.join(SOURCE_DIR, "backend", "Static", file), path.join(SOURCE_DIR, "backend", "Shared"))
 def build_backend():
-    shutil.copy2(path.join(SOURCE_DIR, "backend", "Static", "renderer.h"), path.join(SOURCE_DIR, "backend", "Shared"))
-    shutil.copy2(path.join(SOURCE_DIR, "backend", "Static", "renderer.cpp"), path.join(SOURCE_DIR, "backend", "Shared"))
     mandatory_exec([CMAKE, "--build", BINARY_DIR, "--target", "BackendSharedplugin"])
 
 def install_backend():
@@ -65,6 +64,7 @@ def init_msvc():
 
 init_msvc()
 system(f"cd '{SOURCE_DIR}'")
+sync_shared_backend()
 reset_cmake(hard_reset=False)
 build_backend()
 install_backend()

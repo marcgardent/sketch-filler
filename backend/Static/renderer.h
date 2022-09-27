@@ -7,7 +7,9 @@
 
 #include <QQuickItem>
 #include <QImage>
+#include <QPixmap>
 #include <QtQml>
+#include <opencv2/core/mat.hpp>
 
 class Renderer : public QQuickItem {
 Q_OBJECT
@@ -18,8 +20,9 @@ public:
     QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
 
 private:
-    QImage m_image;
-
+    QImage* m_image;
+    qint64 lastTime;
+    cv::Mat get_as_mat();
 };
 
 
