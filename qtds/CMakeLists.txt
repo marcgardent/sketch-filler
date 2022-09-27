@@ -25,5 +25,4 @@ target_link_libraries(ColorizeApp PRIVATE
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/qmlmodules)
 
-
-#target_link_libraries(ColorizeApp PRIVATE BackendStatic BackendStaticplugin )
+target_link_libraries(ColorizeApp PRIVATE BackendStaticplugin )

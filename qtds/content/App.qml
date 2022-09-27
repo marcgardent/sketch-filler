@@ -118,26 +118,19 @@ Window {
 
         }
 
-    // Just a simple file dialog to choose an image
-    FileDialog {
-        id: openDialog
-        onAccepted: {
-            console.log("Accepted: " + openDialog.fileUrls)
-            if (openDialog.currentFile)
-                image.source = openDialog.currentFile
+        // Just a simple file dialog to choose an image
+        FileDialog {
+            id: openDialog
+            onAccepted: {
+                console.log("Accepted: " + openDialog.fileUrls)
+                if (openDialog.currentFile)
+                    image.source = openDialog.currentFile
+            }
+            onRejected: { console.log("Rejected") }
         }
-        onRejected: { console.log("Rejected") }
-    }
-
-
     }
 
 }
-
-
-
-
-
 
 /*##^##
 Designer {
