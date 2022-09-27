@@ -31,12 +31,14 @@ def reset_cmake(hard_reset=True):
     mandatory_exec([CMAKE, "-DCMAKE_BUILD_TYPE=Release", f"-DCMAKE_MAKE_PROGRAM={NINJA}" , "-G", "Ninja", "-S", SOURCE_DIR, "-B", BINARY_DIR])
 
 def build_backend():
+    shutil.copy2(path.join(SOURCE_DIR, "backend", "Static", "renderer.h"), path.join(SOURCE_DIR, "backend", "Shared"))
+    shutil.copy2(path.join(SOURCE_DIR, "backend", "Static", "renderer.cpp"), path.join(SOURCE_DIR, "backend", "Shared"))
     mandatory_exec([CMAKE, "--build", BINARY_DIR, "--target", "BackendSharedplugin"])
 
 def install_backend():
     for file in BACKEND_REDIST_FILES:
         shutil.copy2(path.join(BACKEND_BINARY_DIR, file), BACKEND_REDIST_DIR)
-    shutil.copy2(path.join(SOURCE_DIR, "backend", "renderer.h"), BACKEND_REDIST_DIR)
+    shutil.copy2(path.join(SOURCE_DIR, "backend", "Static", "renderer.h"), BACKEND_REDIST_DIR)
 
     if Path(BACKEND_REDIST_DIR) in [Path(p) for p in environ["PATH"].split(";")]:
         print("Backend is ready-to-use in QT Design Studio!")
