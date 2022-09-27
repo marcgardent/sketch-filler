@@ -1,9 +1,18 @@
 cmake_minimum_required(VERSION 3.21)
-project(sketchFiller)
+project(sketchFiller CXX)
 set(CMAKE_CXX_STANDARD 17)
-
 set(OpenCV_DIR "T:/bin/opencv/build")
 set(CMAKE_PREFIX_PATH "T:/ProgramData/Qt6/6.3.2/msvc2019_64")
+
+
+message(STATUS "ENVVARS:")
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "  * ${_variableName}=${${_variableName}}")
+endforeach()
+message(STATUS ":ENVVARS")
+
 
 find_package(OpenCV REQUIRED)
 include_directories(
@@ -22,4 +31,6 @@ include_directories(
 )
 add_subdirectory(processing)
 add_subdirectory(showroom)
+
+add_subdirectory(backend)
 add_subdirectory(qtds)

@@ -25,7 +25,9 @@ Window {
         anchors.fill: parent
         color: "#262626"
 
-        Rectangle{
+        //menu
+        Rectangle {
+            id: menuRect
             width: parent.width
             height:100
             color: "#959595"
@@ -55,6 +57,64 @@ Window {
                     onClicked: main.close()
                 }
             }
+        }
+        //working space
+        Rectangle {
+            anchors.top: menuRect.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+
+            // Important things!
+
+                Renderer{
+                     anchors.fill: parent
+                }
+
+                Flickable {
+                    anchors.fill: parent
+                    anchors.topMargin: 100
+
+                    contentWidth: Math.max(image.width * image.scale, parent.width)
+                    contentHeight: Math.max(image.height * image.scale, parent.height)
+                    clip: true
+
+                    Image {
+                        id: image
+
+                        property real zoom: 0.0
+                        property real zoomStep: 0.1
+
+                        asynchronous: true
+                        cache: false
+                        smooth: true
+                        antialiasing: true
+                        mipmap: true
+
+                        anchors.centerIn: parent
+                        fillMode: Image.PreserveAspectFit
+                        transformOrigin: Item.Center
+                        scale: Math.min(parent.width / width, parent.height / height, 1) + zoom
+
+                        //source: openDialog.fileUrl
+                    }
+                }
+
+
+                // Mouse zoom
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+
+                    onWheel: {
+                        if (wheel.angleDelta.y > 0)
+                            image.zoom = Number((image.zoom + image.zoomStep).toFixed(1))
+                        else
+                            if (image.zoom > 0) image.zoom = Number((image.zoom - image.zoomStep).toFixed(1))
+
+                        wheel.accepted=true
+                    }
+                }
 
         }
 
@@ -69,57 +129,12 @@ Window {
         onRejected: { console.log("Rejected") }
     }
 
-    // Important things!
-        Flickable {
-            anchors.fill: parent
-            anchors.topMargin: 100
 
-            contentWidth: Math.max(image.width * image.scale, parent.width)
-            contentHeight: Math.max(image.height * image.scale, parent.height)
-            clip: true
-
-            Image {
-                id: image
-
-                property real zoom: 0.0
-                property real zoomStep: 0.1
-
-                asynchronous: true
-                cache: false
-                smooth: true
-                antialiasing: true
-                mipmap: true
-
-                anchors.centerIn: parent
-                fillMode: Image.PreserveAspectFit
-                transformOrigin: Item.Center
-                scale: Math.min(parent.width / width, parent.height / height, 1) + zoom
-
-                //source: openDialog.fileUrl
-            }
-        }
-
-        Renderer{
-             anchors.fill: parent
-        }
-
-        // Mouse zoom
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.NoButton
-
-            onWheel: {
-                if (wheel.angleDelta.y > 0)
-                    image.zoom = Number((image.zoom + image.zoomStep).toFixed(1))
-                else
-                    if (image.zoom > 0) image.zoom = Number((image.zoom - image.zoomStep).toFixed(1))
-
-                wheel.accepted=true
-            }
-        }
     }
 
 }
+
+
 
 
 

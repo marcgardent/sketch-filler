@@ -3,10 +3,8 @@ project(ColorizeApp LANGUAGES CXX)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
-set(QML_IMPORT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/backend ${CMAKE_CURRENT_BINARY_DIR}/backend CACHE STRING "" FORCE)
-
 find_package(Qt6 COMPONENTS Gui Qml Quick OpenGL)
-
+find_package(Backend  PATHS ${BACKEND_LIBRARY_PATH})
 qt_add_executable(ColorizeApp
         src/main.cpp
 )
@@ -27,7 +25,5 @@ target_link_libraries(ColorizeApp PRIVATE
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/qmlmodules)
 
-add_subdirectory(imports/backend)
-target_link_libraries(ColorizeApp PRIVATE
-        backendplugin
-        )
+
+#target_link_libraries(ColorizeApp PRIVATE BackendStatic BackendStaticplugin )
