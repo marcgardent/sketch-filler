@@ -1,0 +1,7 @@
+module backend
+linktarget BackendSharedplugin
+optional plugin BackendSharedplugin
+classname backendPlugin
+typeinfo BackendShared.qmltypes
+prefer :/backend/
+
