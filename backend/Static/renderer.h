@@ -20,9 +20,15 @@ public:
     QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
 
 private:
-    QImage* m_image;
+    bool dirty=true;
     qint64 lastTime;
+    QImage* m_image;
+
     cv::Mat get_as_mat();
+    void fps();
+
+public slots:
+    void  fill_request();
 };
 
 

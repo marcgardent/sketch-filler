@@ -50,6 +50,13 @@ Window {
                     onClicked: openDialog.open()
                 }
 
+                RoundButton {
+                    id: updateButton
+                    text: "Fill"
+                    height: parent.height - 2*Constants.gutter
+                    width: parent.height - 2*Constants.gutter
+                    onClicked: workspace.fill_request()
+                }
 
                 RoundButton {
                     id: exitButton
@@ -59,13 +66,7 @@ Window {
                     onClicked: main.close()
                 }
 
-                RoundButton {
-                    id: updateButton
-                    text: "Update"
-                    height: parent.height - 2*Constants.gutter
-                    width: parent.height - 2*Constants.gutter
-                    onClicked: workspace.update()
-                }
+
             }
         }
         //working space
@@ -79,12 +80,6 @@ Window {
                 Renderer{
                     id: workspace
                     anchors.fill: parent
-                }
-
-                Timer {
-                    interval: 500; running: true; repeat: true
-                    onTriggered: workspace.update()
-
                 }
 
         }
