@@ -1,11 +1,13 @@
 #include "renderer.h"
+
 #include <QSGSimpleTextureNode>
 #include <QSGImageNode>
 #include <QDebug>
-#include "asm_opencv.h"
+
 #include <opencv2/core/types.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include "Filler.hpp"
 
 cv::RNG rng(12365);
 
@@ -69,7 +71,16 @@ void Renderer::fps(){
 
 void Renderer::fill_request() {
     cv::Mat mat = get_as_mat();
-    cv::line(mat, cv::Point(0,0), cv::Point(256,256), rng_argb(), 10);
+    //cv::line(mat, cv::Point(0,0), cv::Point(256,256), rng_argb(), 10);
+
+    cv::Mat out= processing::filler::fill(mat);
+    out.copyTo(mat);
+    requestUpdate();
+}
+
+void Renderer::requestUpdate(){
+
+
     dirty = true;
-    update(); //Request update();
+    update();
 }

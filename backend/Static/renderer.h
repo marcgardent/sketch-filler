@@ -11,6 +11,7 @@
 #include <QtQml>
 #include <opencv2/core/mat.hpp>
 
+
 class Renderer : public QQuickItem {
 Q_OBJECT
 QML_ELEMENT
@@ -26,6 +27,7 @@ private:
 
     cv::Mat get_as_mat();
     void fps();
+    void requestUpdate();
 
 public slots:
     void  fill_request();

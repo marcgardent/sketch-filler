@@ -18,6 +18,7 @@ target_link_libraries(BackendShared PRIVATE
         Qt${QT_VERSION_MAJOR}::Quick
         Qt${QT_VERSION_MAJOR}::Qml
         ${OpenCV_LIBS}
+        ${BACKEND_LIBS}
         )
 
 target_include_directories(BackendShared PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

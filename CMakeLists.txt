@@ -22,6 +22,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/processing/polygons
         ${CMAKE_CURRENT_SOURCE_DIR}/processing/contrib
         ${CMAKE_CURRENT_SOURCE_DIR}/processing/morphologicals
+        ${CMAKE_CURRENT_SOURCE_DIR}/processing/filler
 )
 
 include_directories(

@@ -2,10 +2,8 @@
 #include <QSGSimpleTextureNode>
 #include <QSGImageNode>
 #include <QDebug>
-#include "asm_opencv.h"
 #include <opencv2/core/types.hpp>
 #include <opencv2/imgproc.hpp>
-
 
 cv::RNG rng(12365);
 
