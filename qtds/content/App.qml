@@ -29,6 +29,7 @@ Window {
 
         //menu
         Rectangle {
+            z: 1
             id: menuRect
             width: parent.width
             height:100

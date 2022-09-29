@@ -15,55 +15,6 @@ namespace processing::filler {
         return  cv::Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255),0);
     }
 
-    Mat ARGB_to_BGRA(InputArray source) {
-        CV_CheckTypeEQ(source.type(), CV_8UC4, "");
-
-        const int inAChannel = 0;
-        const int inRChannel = 1;
-        const int inGChannel = 2;
-        const int inBChannel = 3;
-
-        const int outBChannel = 0;
-        const int outGChannel = 1;
-        const int outRChannel = 2;
-        const int outAChannel = 3;
-
-        int from_to[] = {
-                //inAChannel, outAChannel,
-                inRChannel, outRChannel,
-                inGChannel, outGChannel,
-                inBChannel, outBChannel
-        };
-
-        Mat out = Mat(source.rows(), source.cols(), CV_8UC3);
-        mixChannels(source, out, from_to, 3);
-        return out;
-    }
-
-    Mat BGRA_to_ARGB(InputArray source) {
-        CV_CheckTypeEQ(source.type(), CV_8UC3, "");
-        const int inBChannel = 0;
-        const int inGChannel = 1;
-        const int inRChannel = 2;
-        const int inAChannel = 3;
-
-        const int outAChannel = 0;
-        const int outRChannel = 1;
-        const int outGChannel = 2;
-        const int outBChannel = 3;
-
-        int from_to[] = {
-                //inAChannel, outAChannel,
-                inRChannel, outRChannel,
-                inGChannel, outGChannel,
-                inBChannel, outBChannel
-        };
-
-        Mat out = Mat(source.rows(), source.cols(), CV_8UC4);
-        mixChannels(source, out, from_to, 3);
-        return out;
-    }
-
     void black_mask(InputArray bgra_source, OutputArray gray_dst) {
         CV_CheckTypeEQ(bgra_source.type(), CV_8UC3, "");
         Mat working_mat;
@@ -92,32 +43,34 @@ namespace processing::filler {
         //cv::imshow("black_layer", black_layer);
         uchar fillValue = 255;
         auto flag = 4 | (fillValue << 8);
-
+        int floodFillCount=0;
         for (int i = 0; i < color_layer.rows - 1; i++) {
             for (int j = 0; j < color_layer.cols - 1; j++) {
                 uchar pixel = black_layer.at<uchar>(i+1, j+1);
                 if(pixel==0){
                     Scalar color  = rng_bgra();
-
                     floodFill(color_layer, black_layer, Point(j,i), color, 0, Scalar(0,0,0), Scalar(0,0,0), flag);
-                    std::cout << "flood " << j << " " << i << std::endl;
-                    int k = waitKey(0);
+                    floodFillCount++;
                 }
             }
         }
+        std::cout << "floodFillCount: " << floodFillCount << std::endl;
+
     }
 
-    Mat fill(InputArray src) {
+    Mat fill(Mat src) {
 
-        Mat render = ARGB_to_BGRA(src);
         Mat black_layer;
         Mat object_id_layer;
 
-        black_mask(render, black_layer);
+        black_mask(src, black_layer);
         cvtColor(black_layer, object_id_layer, COLOR_GRAY2BGR);
         fill_all(black_layer,object_id_layer);
 
         //render.setTo(Scalar(0, 255, 0, 0), black_layer);
-        return BGRA_to_ARGB(object_id_layer);
+
+        object_id_layer = object_id_layer.mul(src/255);
+
+        return object_id_layer;
     }
 }

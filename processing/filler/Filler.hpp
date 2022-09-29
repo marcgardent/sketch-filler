@@ -11,7 +11,7 @@
 namespace processing::filler {
 
     using namespace cv;
-    Mat fill(InputArray src);
+    Mat fill(Mat src);
 }
 
 #endif //SKETCHFILLER_FILLER_HPP

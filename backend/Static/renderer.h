@@ -10,6 +10,7 @@
 #include <QPixmap>
 #include <QtQml>
 #include <opencv2/core/mat.hpp>
+#include "Filler.hpp"
 
 
 class Renderer : public QQuickItem {
@@ -20,14 +21,19 @@ public:
     ~Renderer();
     QSGNode *updatePaintNode(QSGNode *, UpdatePaintNodeData *) override;
 
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent *event);
+
 private:
-    bool dirty=true;
+    bool dirty_render=true;
     qint64 lastTime;
     QImage* m_image;
-
     cv::Mat get_as_mat();
     void fps();
-    void requestUpdate();
+    void requestRender();
 
 public slots:
     void  fill_request();
