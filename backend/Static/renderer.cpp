@@ -9,15 +9,9 @@
 
 #include "Filler.hpp"
 
-cv::RNG rng(12365);
-
-
-inline cv::Scalar rng_argb() {
-    return  cv::Scalar(0,rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255));
-}
-
 Renderer::Renderer(QQuickItem *parent) : QQuickItem(parent) {
-    m_image = new QImage("T:\\data\\sketch-filler2\\chalenges\\case-03.png");
+    // m_image = new QImage("T:\\data\\sketch-filler2\\chalenges\\case-03.png");
+    m_image = new QImage("G:\\Mon Drive\\Ludopant Creative Studio\\Ludopant Galaxy\\order #2 - BD CJS S1E1 Paris\\Order 2.1\\2022-09-16 release Ch1&2\\Page finale 1.tiff");
     setFlag(QQuickItem::ItemHasContents, true);
     get_as_mat();
 }

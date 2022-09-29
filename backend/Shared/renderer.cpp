@@ -12,7 +12,9 @@ inline cv::Scalar rng_argb() {
 }
 
 Renderer::Renderer(QQuickItem *parent) : QQuickItem(parent) {
-    m_image = new QImage("T:\\data\\sketch-filler2\\chalenges\\case-03.png");
+    // - m_image = new QImage("T:\\data\\sketch-filler2\\chalenges\\case-03.png");
+
+
     setFlag(QQuickItem::ItemHasContents, true);
     get_as_mat();
 }

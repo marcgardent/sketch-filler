@@ -3,8 +3,17 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
+#include <opencv2/highgui.hpp>
+#include <iostream>
+
 namespace processing::filler {
     using namespace cv;
+    cv::RNG rng(12365);
+
+    inline cv::Scalar rng_bgra() {
+
+        return  cv::Scalar(rng.uniform(0, 255), rng.uniform(0, 255), rng.uniform(0, 255),0);
+    }
 
     Mat ARGB_to_BGRA(InputArray source) {
         CV_CheckTypeEQ(source.type(), CV_8UC4, "");
@@ -20,19 +29,19 @@ namespace processing::filler {
         const int outAChannel = 3;
 
         int from_to[] = {
-                inAChannel, outAChannel,
+                //inAChannel, outAChannel,
                 inRChannel, outRChannel,
                 inGChannel, outGChannel,
                 inBChannel, outBChannel
         };
 
-        Mat out = Mat(source.rows(), source.cols(), CV_8UC4);
-        mixChannels(source, out, from_to, 4);
+        Mat out = Mat(source.rows(), source.cols(), CV_8UC3);
+        mixChannels(source, out, from_to, 3);
         return out;
     }
 
     Mat BGRA_to_ARGB(InputArray source) {
-        CV_CheckTypeEQ(source.type(), CV_8UC4, "");
+        CV_CheckTypeEQ(source.type(), CV_8UC3, "");
         const int inBChannel = 0;
         const int inGChannel = 1;
         const int inRChannel = 2;
@@ -44,19 +53,19 @@ namespace processing::filler {
         const int outBChannel = 3;
 
         int from_to[] = {
-                inAChannel, outAChannel,
+                //inAChannel, outAChannel,
                 inRChannel, outRChannel,
                 inGChannel, outGChannel,
                 inBChannel, outBChannel
         };
 
         Mat out = Mat(source.rows(), source.cols(), CV_8UC4);
-        mixChannels(source, out, from_to, 4);
+        mixChannels(source, out, from_to, 3);
         return out;
     }
 
     void black_mask(InputArray bgra_source, OutputArray gray_dst) {
-        CV_CheckTypeEQ(bgra_source.type(), CV_8UC4, "");
+        CV_CheckTypeEQ(bgra_source.type(), CV_8UC3, "");
         Mat working_mat;
         cvtColor(bgra_source, working_mat, COLOR_BGRA2GRAY);
         threshold(working_mat, working_mat, 100, 255, THRESH_BINARY);
@@ -78,12 +87,37 @@ namespace processing::filler {
         dst.assign(ret_mat);
     }
 
-    Mat filler::fill(InputArray src) {
-        Mat render = ARGB_to_BGRA(src);
-        Mat black_layer;
-        black_mask(render, black_layer);
-        render.setTo(Scalar(0, 255, 0, 0), black_layer);
-        return BGRA_to_ARGB(render);
+    void fill_all(Mat black_layer, Mat color_layer) {
+        cv::copyMakeBorder(black_layer, black_layer, 1, 1, 1, 1, cv::BORDER_REPLICATE);
+        //cv::imshow("black_layer", black_layer);
+        uchar fillValue = 255;
+        auto flag = 4 | (fillValue << 8);
+
+        for (int i = 0; i < color_layer.rows - 1; i++) {
+            for (int j = 0; j < color_layer.cols - 1; j++) {
+                uchar pixel = black_layer.at<uchar>(i+1, j+1);
+                if(pixel==0){
+                    Scalar color  = rng_bgra();
+
+                    floodFill(color_layer, black_layer, Point(j,i), color, 0, Scalar(0,0,0), Scalar(0,0,0), flag);
+                    std::cout << "flood " << j << " " << i << std::endl;
+                    int k = waitKey(0);
+                }
+            }
+        }
     }
 
+    Mat fill(InputArray src) {
+
+        Mat render = ARGB_to_BGRA(src);
+        Mat black_layer;
+        Mat object_id_layer;
+
+        black_mask(render, black_layer);
+        cvtColor(black_layer, object_id_layer, COLOR_GRAY2BGR);
+        fill_all(black_layer,object_id_layer);
+
+        //render.setTo(Scalar(0, 255, 0, 0), black_layer);
+        return BGRA_to_ARGB(object_id_layer);
+    }
 }
