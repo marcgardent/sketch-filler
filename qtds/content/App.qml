@@ -72,17 +72,18 @@ Window {
         }
         //working space
         Rectangle {
-            color: "#222222"
+            color: "#220022"
             anchors.top: menuRect.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-
                 Renderer{
                     id: workspace
-                    anchors.fill: parent
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
                 }
-
         }
 
         // Just a simple file dialog to choose an image

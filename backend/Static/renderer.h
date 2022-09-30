@@ -10,8 +10,8 @@
 #include <QPixmap>
 #include <QtQml>
 #include <opencv2/core/mat.hpp>
+#include <QSGImageNode>
 #include "Filler.hpp"
-
 
 class Renderer : public QQuickItem {
 Q_OBJECT
@@ -34,10 +34,22 @@ private:
     cv::Mat get_as_mat();
     void fps();
     void requestRender();
+    void applyTransform(QSGTransformNode* transform);
+    void applyFit(QSGImageNode *node);
+    void move(QPointF delta);
+    void zoom(float delta, QPointF origin);
+    QPointF transform(QPointF point);
+    QPointF m_padding = QPointF(0,0);
+    double m_scale = 0.9;
+    QPointF m_press_left_click = QPoint(0,0);
+    QPointF m_press_right_click = QPoint(0,0);
+    QPointF m_press_middle_click = QPoint(0,0);
+
+
+
 
 public slots:
     void  fill_request();
 };
-
 
 #endif //SKETCHFILLER_RENDERER_H
